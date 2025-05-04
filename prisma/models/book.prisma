@@ -1,0 +1,8 @@
+model Book {
+  id            Int    @id @default(autoincrement())
+  title         String
+  ratings       Rating[]
+  ratingCount   Int
+  bookSeries    BookSeries? @relation(fields: [bookSeriesId], references: [id])
+  bookSeriesId  Int?
+}

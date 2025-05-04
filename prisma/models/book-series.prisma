@@ -1,0 +1,7 @@
+model BookSeries {
+  id    Int    @id @default(autoincrement())
+  title String
+  books Book[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
