@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1746469688930,
+      "tag": "0000_daffy_thor_girl",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1746556555006,
+      "tag": "0001_jittery_vector",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1746557004069,
+      "tag": "0002_add_book_rating_trigger",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1746557024955,
+      "tag": "0003_add_series_rating_trigger",
+      "breakpoints": true
+    }
+  ]
+}
