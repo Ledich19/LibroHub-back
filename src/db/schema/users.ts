@@ -3,7 +3,7 @@ import { relations } from "drizzle-orm";
 import { bookRatings } from "./book_ratings";
 import { bookSeriesRatings } from "./book_series_ratings";
 
-export const users = pgTable("users", {
+export const usersTable = pgTable("users", {
   id: serial("id").primaryKey(),
   email: varchar("email", { length: 255 }).unique().notNull(),
   passwordHash: varchar("password_hash", { length: 255 }).notNull(),
@@ -13,7 +13,7 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").$onUpdate(() => new Date()).notNull(),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(usersTable, ({ many }) => ({
   ratings: many(bookRatings),
   bookSeriesRatings: many(bookSeriesRatings),
 }));

@@ -1,12 +1,12 @@
 import { pgTable, serial, integer, unique } from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
-import { users } from "./users";
+import { usersTable } from "./users";
 import { bookSeries } from "./book_series";
 
 export const bookSeriesRatings = pgTable("book_series_ratings", {
   id: serial("id").primaryKey(),
   value: integer("value").notNull(),
-  userId: integer("user_id").notNull().references(() => users.id),
+  userId: integer("user_id").notNull().references(() => usersTable.id),
   bookSeriesId: integer("book_series_id").notNull().references(() => bookSeries.id),
 }, (table) => [
   unique("unique_user_series").on(table.userId, table.bookSeriesId),
@@ -14,9 +14,9 @@ export const bookSeriesRatings = pgTable("book_series_ratings", {
 ]);
 
 export const bookSeriesRatingsRelations = relations(bookSeriesRatings, ({ one }) => ({
-  user: one(users, {
+  user: one(usersTable, {
     fields: [bookSeriesRatings.userId],
-    references: [users.id],
+    references: [usersTable.id],
   }),
   bookSeries: one(bookSeries, {
     fields: [bookSeriesRatings.bookSeriesId],

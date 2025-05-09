@@ -1,26 +1,21 @@
 import jwt from "jsonwebtoken";
-import { builder, prisma } from "../../builder";
-import { User } from "../../../generated/prisma";
+import { builder } from "../../builder";
 import { compare, hash } from "bcryptjs";
+import { User } from "../../../db/types/user";
+import db from "../../../db";
+import { usersTable } from "../../../db/schema";
+import { eq } from "drizzle-orm";
 
-const JWT_SECRET = process.env.JWT_SECRET || "secret";
+const JWT_SECRET = process.env.JWT_SECRET ?? "secret";
 
-// --- Типы ---
-const UserObject = builder.prismaObject("User", {
+export const user = builder.objectRef<User>("User");
+user.implement({
   fields: (t) => ({
     id: t.exposeID("id"),
-    name: t.exposeString("name"),
     email: t.exposeString("email"),
-    links: t.relation("links"),
-  }),
-});
-
-builder.prismaObject("Link", {
-  fields: (t) => ({
-    id: t.exposeID("id"),
-    description: t.exposeString("description"),
-    url: t.exposeString("url"),
-    postedBy: t.relation("postedBy"),
+    name: t.exposeString("name"),
+    createdAt: t.expose("createdAt", { type: "Date" }),
+    updatedAt: t.expose("updatedAt", { type: "Date" }),
   }),
 });
 
@@ -33,43 +28,21 @@ const AuthPayload = builder
     fields: (t) => ({
       token: t.exposeString("token"),
       user: t.expose("user", {
-        // type: builder.prismaObject("User", {})
-        type: UserObject,
+        type: user,
       }),
     }),
   });
 
 // --- Query ---
-builder.queryFields((t) => ({
- 
-
-  feed: t.prismaField({
-    type: ["Link"],
-    resolve: (query) => prisma.link.findMany({ ...query }),
-  }),
-}));
+// builder.queryFields((t) => ({
+//   feed: t.prismaField({
+//     type: ["Link"],
+//     resolve: (query) => prisma.link.findMany({ ...query }),
+//   }),
+// }));
 
 // --- Mutation ---
 builder.mutationFields((t) => ({
-  // post: t.prismaField({
-  //   type: "Link",
-  //   args: {
-  //     url: t.arg.string({ required: true }),
-  //     description: t.arg.string({ required: true }),
-  //   },
-  //   resolve: async (query, _, args, ctx) => {
-  //     if (!ctx.userId) throw new Error("Not authenticated");
-  //     return prisma.link.create({
-  //       ...query,
-  //       data: {
-  //         url: args.url,
-  //         description: args.description,
-  //         userId: ctx.userId,
-  //       },
-  //     });
-  //   },
-  // }),
-
   signup: t.field({
     type: AuthPayload,
     args: {
@@ -80,16 +53,19 @@ builder.mutationFields((t) => ({
     resolve: async (_, args) => {
       const hashedPassword = await hash(args.password, 10);
 
-      const user = await prisma.user.create({
-        data: {
-          email: args.email,
-          name: args.name,
-          passwordHash: hashedPassword,
-        },
-      });
+      const user: typeof usersTable.$inferInsert = {
+        name: args.name,
+        email: args.email,
+        passwordHash: hashedPassword,
+      };
 
-      const token = jwt.sign({ userId: user.id }, JWT_SECRET);
-      return { token, user };
+      const [createdUser] = await db
+        .insert(usersTable)
+        .values(user)
+        .returning();
+
+      const token = jwt.sign({ userId: createdUser.id }, JWT_SECRET);
+      return { token, user: createdUser };
     },
   }),
 
@@ -99,8 +75,12 @@ builder.mutationFields((t) => ({
       email: t.arg.string({ required: true }),
       password: t.arg.string({ required: true }),
     },
+
     resolve: async (_, { email, password }) => {
-      const user = await prisma.user.findUnique({ where: { email } });
+      const user = await db.query.usersTable.findFirst({
+        where: eq(usersTable.email, email),
+      });
+
       if (!user) throw new Error("User not found");
 
       const valid = await compare(password, user.passwordHash);

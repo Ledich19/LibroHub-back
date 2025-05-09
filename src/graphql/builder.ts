@@ -1,25 +1,31 @@
-
 import SchemaBuilder from "@pothos/core";
-import PrismaPlugin from "@pothos/plugin-prisma";
-import type PrismaTypes from "@pothos/plugin-prisma/generated";
-import { PrismaClient } from "../generated/prisma";
+import { GraphQLDate } from "graphql-scalars";
 
-export const prisma = new PrismaClient();
+// declare global {
+//   interface PothosSchemaTypes extends SchemaTypes {
+//     Scalars: SchemaTypes["Scalars"] & {
+//       Date: {
+//         Input: Date;
+//         Output: Date;
+//       };
+//     };
+//   }
+// }
 
 export const builder = new SchemaBuilder<{
-  PrismaTypes: PrismaTypes;
+  Scalars: {
+    Date: { Input: Date; Output: Date };
+    // String: { Input: string; Output: string };
+    // ID: { Input: string | number; Output: string | number };
+    // Int: { Input: number; Output: number };
+    // Float: { Input: number; Output: number };
+    // Boolean: { Input: boolean; Output: boolean };
+  };
 }>({
-  plugins: [PrismaPlugin],
-  prisma: {
-    client: prisma,
-    exposeDescriptions: {
-      models: true,
-      fields: true,
-    },
-    onUnusedQuery: process.env.MODE === "development" ? "warn" : null,
-  },
+  plugins: [],
 });
 
+builder.addScalarType("Date", GraphQLDate, {});
 // Инициализация базовых типов
 builder.queryType({});
 builder.mutationType({});
