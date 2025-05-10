@@ -1,5 +1,5 @@
 import { integer, pgTable, serial, varchar } from "drizzle-orm/pg-core";
-import { books } from "./books";
+import { booksTable } from "./books";
 
 export const genres = pgTable("genres", {
   id: serial("id").primaryKey(),
@@ -7,6 +7,6 @@ export const genres = pgTable("genres", {
 });
 
 export const bookGenres = pgTable("book_genres", {
-  bookId: integer("book_id").references(() => books.id).notNull(),
+  bookId: integer("book_id").references(() => booksTable.id).notNull(),
   genreId: integer("genre_id").references(() => genres.id).notNull(),
 });

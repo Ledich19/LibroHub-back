@@ -1,4 +1,4 @@
-import { pgTable, serial, integer, unique } from "drizzle-orm/pg-core";
+import { pgTable, serial, integer, unique, check } from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
 import { usersTable } from "./users";
 import { bookSeries } from "./book_series";
@@ -10,7 +10,7 @@ export const bookSeriesRatings = pgTable("book_series_ratings", {
   bookSeriesId: integer("book_series_id").notNull().references(() => bookSeries.id),
 }, (table) => [
   unique("unique_user_series").on(table.userId, table.bookSeriesId),
-  sql`CONSTRAINT value_check CHECK (value >= 0 AND value <= 10)`
+  check("rating_check1", sql`${table.value} >= 0 AND ${table.value} <= 10`),
 ]);
 
 export const bookSeriesRatingsRelations = relations(bookSeriesRatings, ({ one }) => ({

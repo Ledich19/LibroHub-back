@@ -1,12 +1,12 @@
-import { pgTable, serial, varchar, integer, real, text, date } from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar, integer, real, text, date,  doublePrecision } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { bookSeries } from "./book_series";
-import { bookRatings } from "./book_ratings";
 import { bookAuthors } from "./book_authors";
 import { bookGenres } from "./genres";
 import { languages } from "./languages";
+import { bookReviewsTable } from "./book_reviews";
 
-export const books = pgTable("books", {
+export const booksTable = pgTable("books", {
   id: serial("id").primaryKey(),
 
   title: varchar("title", { length: 255 }).notNull(),
@@ -18,6 +18,9 @@ export const books = pgTable("books", {
   pageCount: integer("page_count"),
   seriesIndex: integer("series_index").default(0),
   bookSeriesId: integer("book_series_id").references(() => bookSeries.id),
+
+  totalReviews: integer("total_reviews").default(0),
+  averageRating: doublePrecision("average_rating").default(0),
   //ISBN (International Standard Book Number) — международный стандартный номер книги
   isbn: varchar("isbn", { length: 20 }),
   
@@ -29,16 +32,16 @@ export const books = pgTable("books", {
 
 });
 
-export const booksRelations = relations(books, ({ one, many }) => ({
+export const booksRelations = relations(booksTable, ({ one, many }) => ({
   bookSeries: one(bookSeries, {
-    fields: [books.bookSeriesId],
+    fields: [booksTable.bookSeriesId],
     references: [bookSeries.id],
   }),
   language: one(languages, {
-    fields: [books.languageCode],
+    fields: [booksTable.languageCode],
     references: [languages.code],
   }),
   genres: many(bookGenres),
-  ratings: many(bookRatings),
+  reviews: many(bookReviewsTable),
   authors: many(bookAuthors),
 }));
