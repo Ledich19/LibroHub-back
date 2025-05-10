@@ -1,10 +1,12 @@
 import { pgTable, serial, varchar, integer, real, text, date,  doublePrecision } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { bookSeries } from "./book_series";
-import { bookAuthors } from "./book_authors";
-import { bookGenres } from "./genres";
-import { languages } from "./languages";
+import { bookSeriesTable } from "./books_serias";
+
+
+import { languagesTable } from "./languages";
 import { bookReviewsTable } from "./book_reviews";
+import { bookGenres } from "./genres";
+import { booksToAuthorsTable } from "./books_to_authors";
 
 export const booksTable = pgTable("books", {
   id: serial("id").primaryKey(),
@@ -12,12 +14,12 @@ export const booksTable = pgTable("books", {
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
   rating: real("rating").default(0).notNull(),
-  languageCode: varchar("language_code", { length: 5 }).references(() => languages.code),
+  languageCode: varchar("language_code", { length: 5 }).references(() => languagesTable.code),
   publishedDate: date("published_date"),
   publisher: varchar("publisher", { length: 255 }),
   pageCount: integer("page_count"),
   seriesIndex: integer("series_index").default(0),
-  bookSeriesId: integer("book_series_id").references(() => bookSeries.id),
+  bookSeriesId: integer("book_series_id").references(() => bookSeriesTable.id),
 
   totalReviews: integer("total_reviews").default(0),
   averageRating: doublePrecision("average_rating").default(0),
@@ -33,15 +35,16 @@ export const booksTable = pgTable("books", {
 });
 
 export const booksRelations = relations(booksTable, ({ one, many }) => ({
-  bookSeries: one(bookSeries, {
+  bookSeries: one(bookSeriesTable, {
     fields: [booksTable.bookSeriesId],
-    references: [bookSeries.id],
+    references: [bookSeriesTable.id],
   }),
-  language: one(languages, {
+  language: one(languagesTable, {
     fields: [booksTable.languageCode],
-    references: [languages.code],
+    references: [languagesTable.code],
   }),
+
   genres: many(bookGenres),
   reviews: many(bookReviewsTable),
-  authors: many(bookAuthors),
+  authors: many(booksToAuthorsTable),
 }));

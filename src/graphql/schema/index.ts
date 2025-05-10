@@ -1,5 +1,6 @@
 import "./hello";
 import "./user/user";
+import "./auth/auth";
 
 import { builder } from "../builder";
 

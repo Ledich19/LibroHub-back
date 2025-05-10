@@ -1,9 +1,28 @@
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 import { createYoga, useExecutionCancellation } from "graphql-yoga";
 import { schema } from "./graphql/schema/";
+import { authMiddleware } from "./middleware/auth"; 
+import db from "./db";
+import { Context } from "./graphql/types";
 
 export function buildApp(logging = true) {
-  const app = fastify({ logger: true });
+  const app = fastify({
+    logger: {
+      level: 'info',
+      transport: {
+        target: 'pino-pretty',
+        options: {
+          colorize: true,
+          translateTime: 'SYS:standard',
+          ignore: 'pid,hostname',
+          messageFormat: '{level} {msg}',
+        },
+      },
+    },
+  });
+
+  // Регистрируем middleware
+  app.addHook("preHandler", authMiddleware);
 
   const graphQLServer = createYoga<{
     req: FastifyRequest;
@@ -11,6 +30,12 @@ export function buildApp(logging = true) {
   }>({
     plugins: [useExecutionCancellation()],
     schema: schema,
+    context: async ({ req }) => {
+      return {
+        db,
+        userId: req.userId,
+      } as Context;
+    },
 
     // Integrate Fastify Logger to Yoga
     logging: {

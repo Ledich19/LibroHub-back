@@ -1,28 +1,39 @@
 import SchemaBuilder from "@pothos/core";
 import { GraphQLDate } from "graphql-scalars";
+import ScopeAuthPlugin from "@pothos/plugin-scope-auth";
+import { Context } from "./types";
 
-// declare global {
-//   interface PothosSchemaTypes extends SchemaTypes {
-//     Scalars: SchemaTypes["Scalars"] & {
-//       Date: {
-//         Input: Date;
-//         Output: Date;
-//       };
-//     };
-//   }
-// }
+type MyPerms = "readStuff" | "updateStuff" | "readArticle";
 
 export const builder = new SchemaBuilder<{
   Scalars: {
     Date: { Input: Date; Output: Date };
-    // String: { Input: string; Output: string };
-    // ID: { Input: string | number; Output: string | number };
-    // Int: { Input: number; Output: number };
-    // Float: { Input: number; Output: number };
-    // Boolean: { Input: boolean; Output: boolean };
   };
+  AuthScopes: {
+    loggedIn: boolean;
+    public: boolean;
+    employee: boolean;
+    deferredScope: boolean;
+    // customPerm: MyPerms;
+  };
+  Context: Context;
 }>({
-  plugins: [],
+  plugins: [ScopeAuthPlugin],
+  scopeAuth: {
+    authorizeOnSubscribe: true,
+    authScopes: async (ctx) => ({
+      loggedIn: !!ctx.userId,
+      
+      public: !!ctx.userId,
+      // eagerly evaluated scope
+      employee: await !!ctx.userId,
+      // evaluated when used
+      deferredScope: () => !!ctx.userId,
+      // scope loader with argument
+      // customPerm: (perm) =>
+      //   ctx.permissionService.hasPermission(ctx.userId, perm),
+    }),
+  },
 });
 
 builder.addScalarType("Date", GraphQLDate, {});

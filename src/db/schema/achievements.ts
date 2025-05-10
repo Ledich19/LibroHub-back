@@ -7,7 +7,7 @@ import {
   boolean,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { userAchievementsTable } from "./user_achievements_table";
+import { userToAchievementsTable } from "./user_to_achievements_table";
 
 export const achievementsTable = pgTable("achievements", {
   id: serial("id").primaryKey(),
@@ -26,6 +26,6 @@ export const achievementsTable = pgTable("achievements", {
 export const achievementsRelations = relations(
   achievementsTable,
   ({ one, many }) => ({
-    achievements: many(userAchievementsTable),
+    achievements: many(userToAchievementsTable),
   })
 );

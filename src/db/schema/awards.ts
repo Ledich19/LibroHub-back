@@ -7,7 +7,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { relations } from "drizzle-orm";
-import { authorAwards } from "./author_awards";
+import { authorToAwardsTable } from "./author_to_awards";
 
 export const awards = pgTable("awards", {
   id: serial("id").primaryKey(),
@@ -21,5 +21,5 @@ export const awards = pgTable("awards", {
 });
 
 export const awardsRelations = relations(awards, ({ one, many }) => ({
-  authors: many(authorAwards),
+  authors: many(authorToAwardsTable),
 }));

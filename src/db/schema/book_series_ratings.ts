@@ -1,25 +1,25 @@
 import { pgTable, serial, integer, unique, check } from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
 import { usersTable } from "./users";
-import { bookSeries } from "./book_series";
+import { bookSeriesTable } from "./books_serias";
 
-export const bookSeriesRatings = pgTable("book_series_ratings", {
+export const bookSeriesRatingsTable = pgTable("book_series_ratings", {
   id: serial("id").primaryKey(),
   value: integer("value").notNull(),
   userId: integer("user_id").notNull().references(() => usersTable.id),
-  bookSeriesId: integer("book_series_id").notNull().references(() => bookSeries.id),
+  bookSeriesId: integer("book_series_id").notNull().references(() => bookSeriesTable.id),
 }, (table) => [
   unique("unique_user_series").on(table.userId, table.bookSeriesId),
   check("rating_check1", sql`${table.value} >= 0 AND ${table.value} <= 10`),
 ]);
 
-export const bookSeriesRatingsRelations = relations(bookSeriesRatings, ({ one }) => ({
+export const bookSeriesRatingsTableRelations = relations(bookSeriesRatingsTable, ({ one }) => ({
   user: one(usersTable, {
-    fields: [bookSeriesRatings.userId],
+    fields: [bookSeriesRatingsTable.userId],
     references: [usersTable.id],
   }),
-  bookSeries: one(bookSeries, {
-    fields: [bookSeriesRatings.bookSeriesId],
-    references: [bookSeries.id],
+  bookSeries: one(bookSeriesTable, {
+    fields: [bookSeriesRatingsTable.bookSeriesId],
+    references: [bookSeriesTable.id],
   }),
 }));

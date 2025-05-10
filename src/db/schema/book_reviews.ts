@@ -34,7 +34,6 @@ export const bookReviewsTable = pgTable(
   (table) => [
     unique().on(table.userId, table.bookId),
     check("rating_check1", sql`${table.rating} >= 0 AND ${table.rating} <= 10`),
-    
   ]
 );
 

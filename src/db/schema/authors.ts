@@ -1,9 +1,10 @@
 import { pgTable, serial, varchar, timestamp, text, pgEnum } from "drizzle-orm/pg-core";
 
-import { bookSeries } from "./book_series";
+import { bookSeriesTable } from "./books_serias";
 import { relations } from "drizzle-orm";
-import { bookAuthors } from "./book_authors";
-import { authorAwards } from "./author_awards";
+
+import { authorToAwardsTable } from "./author_to_awards";
+import { booksToAuthorsTable } from "./books_to_authors";
 
 export const authorStatusEnum = pgEnum("author_status", [
   "active",
@@ -18,7 +19,7 @@ export const genderEnum = pgEnum("gender", [
   "other",
 ])
 
-export const authors = pgTable("authors", {
+export const authorsTable = pgTable("authors", {
   id: serial("id").primaryKey(),
 
   firstName: varchar("first_name", { length: 255 }).notNull(),  
@@ -47,8 +48,8 @@ export const authors = pgTable("authors", {
   updatedAt: timestamp("updated_at").$onUpdate(() => new Date()).notNull(),
 });
 
-export const authorsRelations = relations(authors, ({ one, many }) => ({
-  books: many(bookAuthors),
-  bookSeries: many(bookSeries),
-  awards: many(authorAwards),
+export const authorsTableRelations = relations(authorsTable, ({ one, many }) => ({
+  books: many(booksToAuthorsTable),
+  bookSeries: many(bookSeriesTable),
+  awards: many(authorToAwardsTable),
 }));
