@@ -5,22 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1746871999326,
-      "tag": "0000_last_anita_blake",
+      "when": 1746982886444,
+      "tag": "0000_minor_squadron_supreme",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1746872451106,
+      "when": 1746982903344,
       "tag": "0001_add_series_and_book_trigger",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1746968860349,
-      "tag": "0002_sloppy_snowbird",
       "breakpoints": true
     }
   ]

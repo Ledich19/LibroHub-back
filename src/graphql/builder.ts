@@ -2,6 +2,7 @@ import SchemaBuilder from "@pothos/core";
 import { GraphQLDate } from "graphql-scalars";
 import ScopeAuthPlugin from "@pothos/plugin-scope-auth";
 import { Context } from "./types";
+import { GqlAuthor } from "./schema/author/author";
 
 type MyPerms = "readStuff" | "updateStuff" | "readArticle";
 
@@ -17,6 +18,7 @@ export const builder = new SchemaBuilder<{
     // customPerm: MyPerms;
   };
   Context: Context;
+  
 }>({
   plugins: [ScopeAuthPlugin],
   scopeAuth: {

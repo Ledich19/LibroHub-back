@@ -20,5 +20,5 @@ await db
   .values(achievementsData)
   .onConflictDoNothing();
 
-mockSeedsRun();
+mockSeedsRun(db);
 export default db;

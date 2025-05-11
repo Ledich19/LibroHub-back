@@ -1,6 +1,6 @@
 {
-  "id": "6d9c1f82-99f1-4bd2-bf1c-03e238f3d5fa",
-  "prevId": "230177d1-94b5-418b-965b-46be44802c64",
+  "id": "b343fa24-9bc1-43e9-8109-ec5631416003",
+  "prevId": "471ea2f4-653c-4254-9b2c-523652734be7",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -334,66 +334,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.book_authors": {
-      "name": "book_authors",
-      "schema": "",
-      "columns": {
-        "book_id": {
-          "name": "book_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "author_id": {
-          "name": "author_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "book_authors_book_id_books_id_fk": {
-          "name": "book_authors_book_id_books_id_fk",
-          "tableFrom": "book_authors",
-          "columnsFrom": [
-            "book_id"
-          ],
-          "tableTo": "books",
-          "columnsTo": [
-            "id"
-          ],
-          "onUpdate": "no action",
-          "onDelete": "no action"
-        },
-        "book_authors_author_id_authors_id_fk": {
-          "name": "book_authors_author_id_authors_id_fk",
-          "tableFrom": "book_authors",
-          "columnsFrom": [
-            "author_id"
-          ],
-          "tableTo": "authors",
-          "columnsTo": [
-            "id"
-          ],
-          "onUpdate": "no action",
-          "onDelete": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "book_authors_book_id_author_id_pk": {
-          "name": "book_authors_book_id_author_id_pk",
-          "columns": [
-            "book_id",
-            "author_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.book_reviews": {
       "name": "book_reviews",
       "schema": "",
@@ -590,6 +530,58 @@
       },
       "isRLSEnabled": false
     },
+    "public.book_to_genres": {
+      "name": "book_to_genres",
+      "schema": "",
+      "columns": {
+        "book_id": {
+          "name": "book_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "genre_id": {
+          "name": "genre_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "book_to_genres_book_id_books_id_fk": {
+          "name": "book_to_genres_book_id_books_id_fk",
+          "tableFrom": "book_to_genres",
+          "columnsFrom": [
+            "book_id"
+          ],
+          "tableTo": "books",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "book_to_genres_genre_id_genres_id_fk": {
+          "name": "book_to_genres_genre_id_genres_id_fk",
+          "tableFrom": "book_to_genres",
+          "columnsFrom": [
+            "genre_id"
+          ],
+          "tableTo": "genres",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.book_series": {
       "name": "book_series",
       "schema": "",
@@ -652,6 +644,66 @@
           "nullsNotDistinct": false
         }
       },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.books_to_authors": {
+      "name": "books_to_authors",
+      "schema": "",
+      "columns": {
+        "book_id": {
+          "name": "book_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "author_id": {
+          "name": "author_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "books_to_authors_book_id_books_id_fk": {
+          "name": "books_to_authors_book_id_books_id_fk",
+          "tableFrom": "books_to_authors",
+          "columnsFrom": [
+            "book_id"
+          ],
+          "tableTo": "books",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "books_to_authors_author_id_authors_id_fk": {
+          "name": "books_to_authors_author_id_authors_id_fk",
+          "tableFrom": "books_to_authors",
+          "columnsFrom": [
+            "author_id"
+          ],
+          "tableTo": "authors",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "books_to_authors_book_id_author_id_pk": {
+          "name": "books_to_authors_book_id_author_id_pk",
+          "columns": [
+            "book_id",
+            "author_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -1072,12 +1124,6 @@
       "name": "user_achievements",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
         "user_id": {
           "name": "user_id",
           "type": "integer",
@@ -1089,13 +1135,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
         }
       },
       "indexes": {},
@@ -1129,8 +1168,8 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "unique_user_series": {
-          "name": "unique_user_series",
+        "unique_user_achievement": {
+          "name": "unique_user_achievement",
           "columns": [
             "user_id",
             "achievement_id"

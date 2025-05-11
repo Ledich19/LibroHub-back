@@ -52,12 +52,6 @@ CREATE TABLE "awards" (
 	"updated_at" timestamp NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "book_authors" (
-	"book_id" integer NOT NULL,
-	"author_id" integer NOT NULL,
-	CONSTRAINT "book_authors_book_id_author_id_pk" PRIMARY KEY("book_id","author_id")
-);
---> statement-breakpoint
 CREATE TABLE "book_reviews" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" integer,
@@ -82,6 +76,11 @@ CREATE TABLE "book_series_ratings" (
 	CONSTRAINT "rating_check1" CHECK ("book_series_ratings"."value" >= 0 AND "book_series_ratings"."value" <= 10)
 );
 --> statement-breakpoint
+CREATE TABLE "book_to_genres" (
+	"book_id" integer NOT NULL,
+	"genre_id" integer NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "book_series" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
@@ -91,6 +90,12 @@ CREATE TABLE "book_series" (
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp NOT NULL,
 	CONSTRAINT "book_series_slug_unique" UNIQUE("slug")
+);
+--> statement-breakpoint
+CREATE TABLE "books_to_authors" (
+	"book_id" integer NOT NULL,
+	"author_id" integer NOT NULL,
+	CONSTRAINT "books_to_authors_book_id_author_id_pk" PRIMARY KEY("book_id","author_id")
 );
 --> statement-breakpoint
 CREATE TABLE "books" (
@@ -155,21 +160,21 @@ CREATE TABLE "users" (
 );
 --> statement-breakpoint
 CREATE TABLE "user_achievements" (
-	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" integer NOT NULL,
 	"achievement_id" integer NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "unique_user_series" UNIQUE("user_id","achievement_id")
+	CONSTRAINT "unique_user_achievement" UNIQUE("user_id","achievement_id")
 );
 --> statement-breakpoint
 ALTER TABLE "author_awards" ADD CONSTRAINT "author_awards_author_id_authors_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."authors"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "author_awards" ADD CONSTRAINT "author_awards_award_id_awards_id_fk" FOREIGN KEY ("award_id") REFERENCES "public"."awards"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "book_authors" ADD CONSTRAINT "book_authors_book_id_books_id_fk" FOREIGN KEY ("book_id") REFERENCES "public"."books"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "book_authors" ADD CONSTRAINT "book_authors_author_id_authors_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."authors"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "book_reviews" ADD CONSTRAINT "book_reviews_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "book_reviews" ADD CONSTRAINT "book_reviews_book_id_books_id_fk" FOREIGN KEY ("book_id") REFERENCES "public"."books"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "book_series_ratings" ADD CONSTRAINT "book_series_ratings_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "book_series_ratings" ADD CONSTRAINT "book_series_ratings_book_series_id_book_series_id_fk" FOREIGN KEY ("book_series_id") REFERENCES "public"."book_series"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "book_to_genres" ADD CONSTRAINT "book_to_genres_book_id_books_id_fk" FOREIGN KEY ("book_id") REFERENCES "public"."books"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "book_to_genres" ADD CONSTRAINT "book_to_genres_genre_id_genres_id_fk" FOREIGN KEY ("genre_id") REFERENCES "public"."genres"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "books_to_authors" ADD CONSTRAINT "books_to_authors_book_id_books_id_fk" FOREIGN KEY ("book_id") REFERENCES "public"."books"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "books_to_authors" ADD CONSTRAINT "books_to_authors_author_id_authors_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."authors"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "books" ADD CONSTRAINT "books_language_code_languages_code_fk" FOREIGN KEY ("language_code") REFERENCES "public"."languages"("code") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "books" ADD CONSTRAINT "books_book_series_id_book_series_id_fk" FOREIGN KEY ("book_series_id") REFERENCES "public"."book_series"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "book_genres" ADD CONSTRAINT "book_genres_book_id_books_id_fk" FOREIGN KEY ("book_id") REFERENCES "public"."books"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

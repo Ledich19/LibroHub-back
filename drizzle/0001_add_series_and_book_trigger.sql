@@ -1,4 +1,5 @@
 -- Custom SQL migration file, put your code below! --
+-- Custom SQL migration file, put your code below! --
 
 CREATE OR REPLACE FUNCTION update_book_rating() RETURNS TRIGGER AS $$
 BEGIN

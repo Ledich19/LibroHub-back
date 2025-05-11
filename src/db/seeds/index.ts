@@ -1,6 +1,7 @@
 import { seed } from "drizzle-seed";
 import * as schema from "../schema";
-import db from "..";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+
 // fake seeds
 const languageCodes = [
   "uk",
@@ -25,7 +26,7 @@ const publishers = [
   "Macmillan Publishers",
 ];
 
-export const  mockSeedsRun = async () => {
+export const  mockSeedsRun = async (db: NodePgDatabase<typeof schema>) => {
   await seed(db, { users: schema.usersTable }).refine((f) => ({
     users: {
       columns: {
@@ -35,7 +36,7 @@ export const  mockSeedsRun = async () => {
     },
   }));
   
-  seed(db, { authors: schema.authorsTable }).refine((f) => ({
+  await seed(db, { authors: schema.authorsTable }).refine((f) => ({
     authors: {
       count: 10,
       columns: {
@@ -45,7 +46,7 @@ export const  mockSeedsRun = async () => {
     },
   }));
   
-  seed(db, {bookSeries: schema.bookSeriesTable }).refine((f) => ({
+  await seed(db, {bookSeries: schema.bookSeriesTable }).refine((f) => ({
     bookSeries: {
       columns: {
         title: f.loremIpsum(),
@@ -53,7 +54,7 @@ export const  mockSeedsRun = async () => {
     },
   }));
   
-  seed(db, { books: schema.booksTable }).refine((f) => ({
+  await seed(db, { books: schema.booksTable }).refine((f) => ({
     books: {
       columns: {
         title: f.companyName({}),
@@ -80,7 +81,7 @@ export const  mockSeedsRun = async () => {
     },
   }));
   
-  seed(db, { bookToGenres: schema.booksToGenresTable }).refine((f) => ({
+  await seed(db, { bookToGenres: schema.booksToGenresTable }).refine((f) => ({
     bookToGenres: {
       columns: {
         bookId: f.int({ minValue: 1, maxValue: 20 }), 
@@ -88,4 +89,14 @@ export const  mockSeedsRun = async () => {
       count: 20,
     },
   }}));
+
+  await seed(db, { booksToAuthors: schema.booksToAuthorsTable }).refine((f) => ({
+    booksToAuthors: {
+      columns: {
+        bookId: f.int({ minValue: 1, maxValue: 20, isUnique: true }), 
+        authorId: f.int({ minValue: 1, maxValue: 10, isUnique: true }), 
+      },
+      count: 10,
+    }
+  }));
 };

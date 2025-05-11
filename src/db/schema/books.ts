@@ -15,7 +15,9 @@ export const booksTable = pgTable("books", {
   description: text("description"),
   rating: real("rating").default(0).notNull(),
   languageCode: varchar("language_code", { length: 5 }).references(() => languagesTable.code),
+  
   publishedDate: date("published_date"),
+
   publisher: varchar("publisher", { length: 255 }),
   pageCount: integer("page_count"),
   seriesIndex: integer("series_index").default(0),
@@ -31,6 +33,7 @@ export const booksTable = pgTable("books", {
   coverUrl: varchar("cover_url", { length: 255 }),
   previewUrl: varchar("preview_url", { length: 255 }),
   downloadUrl: varchar("download_url", { length: 255 }),
+  
 
 });
 
