@@ -15,7 +15,7 @@ import { DbAuthor } from "../../../db/types/author";
 export const GqlBook = builder
   .loadableObjectRef<DbBook, number>("Book", {
     load: async (ids: number[], ctx): Promise<readonly (DbBook | Error)[]> => {
-      console.log("📦 Loading books in batch:", ids); // лог сюда
+      ctx.log.debug("📦 Loading books in batch:", ids);
       const books = (await ctx.db
         .select()
         .from(booksTable)
@@ -58,16 +58,26 @@ export const GqlBook = builder
         },
       }),
 
-      language: t.field({
+      // language: t.field({
+      //   type: GqlLanguage,
+      //   nullable: true,
+      //   resolve: async (book, args, ctx) => {
+      //     if (!book.languageCode) return null;
+
+      //     return ctx.db.query.languagesTable.findFirst({
+      //       where: (fields, { eq }) => eq(fields.code, book.languageCode ?? ""),
+      //     });
+      //   },
+      // }),
+      language: t.loadable({
         type: GqlLanguage,
         nullable: true,
-        resolve: async (book, args, ctx) => {
-          if (!book.languageCode) return null;
-
-          return ctx.db.query.languagesTable.findFirst({
-            where: (fields, { eq }) => eq(fields.code, book.languageCode ?? ""),
+        load: async (books: string[], ctx) => {
+          return ctx.db.query.languagesTable.findMany({
+            where: (fields, { inArray }) => inArray(fields.code, books),
           });
         },
+        resolve: (book) => book.languageCode,
       }),
 
       authors: t.loadableList({
@@ -76,22 +86,20 @@ export const GqlBook = builder
           ids: number[],
           ctx
         ): Promise<readonly (DbAuthor[] | Error)[]> => {
-          console.log("📚 Loading authors for books:", ids);
+          ctx.log.debug("📚 Loading authors for books:", ids);
 
           const links = await ctx.db
             .select()
             .from(booksToAuthorsTable)
             .where(inArray(booksToAuthorsTable.bookId, ids));
-          console.log("🔗 Found links:", links.length);
+
           const authorIds = links.map((link) => link.authorId);
-          console.log("🧾 Author IDs:", authorIds);
           const authors = (await ctx.db
             .select()
             .from(authorsTable)
             .where(inArray(authorsTable.id, authorIds))) as DbAuthor[];
 
           const authorMap = new Map(authors.map((a) => [a.id, a]));
-          console.log("🗺️ Author map keys:", [...authorMap.keys()]);
           return ids.map((bookId) => {
             const relatedAuthorIds = links
               .filter((link) => link.bookId === bookId)
@@ -113,7 +121,6 @@ export const GqlBook = builder
   });
 
 builder.queryFields((t) => ({
-  
   book: t.field({
     type: GqlBook,
     args: {
@@ -126,9 +133,20 @@ builder.queryFields((t) => ({
 
   books: t.field({
     type: [GqlBook],
-    resolve: async (parent, args, ctx) => {
-      const books = await ctx.db.query.booksTable.findMany();
-      return books.map((book) => book.id);
+    args: {
+      limit: t.arg.int({ defaultValue: 10 }),
+      offset: t.arg.int({ defaultValue: 0 }),
+    },
+    resolve: async (parent, { limit, offset }, ctx) => {
+      const safeLimit = limit ?? 10;
+      const safeOffset = offset ?? 0;
+      const books = await ctx.db
+        .select()
+        .from(booksTable)
+        .limit(safeLimit)
+        .offset(safeOffset);
+
+      return books.map((b) => b.id);
     },
   }),
 }));

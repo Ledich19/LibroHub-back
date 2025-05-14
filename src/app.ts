@@ -34,6 +34,7 @@ export function buildApp(logging = true) {
       return {
         db,
         userId: req.userId,
+        log: req.log,
       } as Context;
     },
 
