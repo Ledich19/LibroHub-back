@@ -2,7 +2,7 @@ import SchemaBuilder from "@pothos/core";
 import { GraphQLDate } from "graphql-scalars";
 import ScopeAuthPlugin from "@pothos/plugin-scope-auth";
 import { Context } from "./types";
-import { GqlAuthor } from "./schema/author/author";
+import DataloaderPlugin from '@pothos/plugin-dataloader';
 
 type MyPerms = "readStuff" | "updateStuff" | "readArticle";
 
@@ -20,7 +20,7 @@ export const builder = new SchemaBuilder<{
   Context: Context;
   
 }>({
-  plugins: [ScopeAuthPlugin],
+  plugins: [ScopeAuthPlugin,DataloaderPlugin],
   scopeAuth: {
     authorizeOnSubscribe: true,
     authScopes: async (ctx) => ({

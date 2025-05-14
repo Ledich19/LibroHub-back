@@ -46,7 +46,7 @@ export const  mockSeedsRun = async (db: NodePgDatabase<typeof schema>) => {
     },
   }));
   
-  await seed(db, {bookSeries: schema.bookSeriesTable }).refine((f) => ({
+  await seed(db, {bookSeries: schema.booksSeriesTable }).refine((f) => ({
     bookSeries: {
       columns: {
         title: f.loremIpsum(),

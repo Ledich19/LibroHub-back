@@ -1,6 +1,6 @@
 import { pgTable, serial, varchar, timestamp, text, pgEnum } from "drizzle-orm/pg-core";
 
-import { bookSeriesTable } from "./books_serias";
+import { booksSeriesTable } from "./books_serias";
 import { relations } from "drizzle-orm";
 
 import { authorToAwardsTable } from "./author_to_awards";
@@ -50,6 +50,6 @@ export const authorsTable = pgTable("authors", {
 
 export const authorsTableRelations = relations(authorsTable, ({ one, many }) => ({
   books: many(booksToAuthorsTable),
-  bookSeries: many(bookSeriesTable),
+  bookSeries: many(booksSeriesTable),
   awards: many(authorToAwardsTable),
 }));

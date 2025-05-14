@@ -1,13 +1,28 @@
 import { eq, inArray } from "drizzle-orm";
-import { booksTable, booksToAuthorsTable } from "../../../db/schema";
+import {
+  authorsTable,
+  booksToAuthorsTable,
+} from "../../../db/schema";
 import { DbAuthor } from "../../../db/types/author";
 import { builder } from "../../builder";
 import { GqlBook } from "../books/books";
 
-
-export const GqlAuthor = builder.objectRef<DbAuthor>("Author");
+export const GqlAuthor = builder.loadableObjectRef<DbAuthor, number>("Author", {
+  load: async (ids: number[], ctx): Promise<readonly (DbAuthor | Error)[]> => {
+    console.log("📦 Loading authors loader works: ", ids);
+    const authors = (await ctx.db
+      .select()
+      .from(authorsTable)
+      .where(inArray(authorsTable.id, ids))) as DbAuthor[];
+    const authorMap = new Map(
+      authors.map((author: DbAuthor) => [author.id, author])
+    );
+    return ids.map(
+      (id) => authorMap.get(id) || new Error(`Author not found: ${id}`)
+    );
+  },
+});
 GqlAuthor.implement({
-
   fields: (t) => ({
     id: t.exposeID("id"),
     firstNames: t.exposeString("firstName"),
@@ -35,20 +50,16 @@ GqlAuthor.implement({
           .select()
           .from(booksToAuthorsTable)
           .where(eq(booksToAuthorsTable.authorId, author.id));
-  
-        const bookIds = links.map(link => link.bookId);
-  
+
+        const bookIds = links.map((link) => link.bookId);
+
         if (bookIds.length === 0) return [];
-  
-        return ctx.db
-          .select()
-          .from(booksTable)
-          .where(inArray(booksTable.id, bookIds));
+
+        return bookIds;
       },
     }),
   }),
 });
-
 
 builder.queryFields((t) => ({
   author: t.field({
@@ -57,16 +68,17 @@ builder.queryFields((t) => ({
       id: t.arg.int({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
-      return ctx.db.query.authorsTable.findFirst({
-        where: (fields, { eq }) => eq(fields.id, args.id),
-      });
+      return args.id; // ✅ вернуть только id
     },
   }),
 
   authors: t.field({
     type: [GqlAuthor],
+    args: {
+      ids: t.arg.stringList({ required: true }),
+    },
     resolve: async (parent, args, ctx) => {
-      return ctx.db.query.authorsTable.findMany();
+      return args.ids.map((id) => Number(id)); // ✅ вернуть массив id
     },
   }),
 }));
