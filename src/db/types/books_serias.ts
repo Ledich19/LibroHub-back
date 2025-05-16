@@ -1,5 +1,5 @@
-import { booksSeriesTable } from "../schema"
+import { seriesTable } from "../schema"
 
 
-export type DbBookSeries = typeof  booksSeriesTable.$inferSelect
-export type DbNewBookSeries = typeof booksSeriesTable.$inferInsert
+export type DbSeries = typeof  seriesTable.$inferSelect
+export type DbNewSeries = typeof seriesTable.$inferInsert

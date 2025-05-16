@@ -9,7 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
-import { bookSeriesRatingsTable } from "./book_series_ratings";
+import { seriesRatingsTable } from "./series_ratings";
 import { bookReviewsTable } from "./book_reviews";
 import { userToAchievementsTable } from "./user_to_achievements_table";
 
@@ -42,6 +42,6 @@ export const usersTable = pgTable("users", {
 
 export const usersRelations = relations(usersTable, ({ many }) => ({
   reviews: many(bookReviewsTable), // Связь с отзывами книг
-  bookSeriesRatings: many(bookSeriesRatingsTable), // Связь с рейтингами книжных серий
+  seriesRatings: many(seriesRatingsTable), // Связь с рейтингами книжных серий
   achievements: many(userToAchievementsTable), // Связь с полученными достижениями
 }));

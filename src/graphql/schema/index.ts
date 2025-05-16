@@ -1,9 +1,11 @@
 import "./hello";
 import "./user/user";
 import "./auth/auth";
-import "./author/author";
-import "./language/language";
-import "./books/books";
+import "./author/author.type";
+
+import "./language";
+import "./books";
+import "./series";
 
 import { builder } from "../builder";
 

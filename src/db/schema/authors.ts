@@ -1,10 +1,12 @@
 import { pgTable, serial, varchar, timestamp, text, pgEnum } from "drizzle-orm/pg-core";
 
-import { booksSeriesTable } from "./books_serias";
+import { seriesTable } from "./series";
 import { relations } from "drizzle-orm";
 
 import { authorToAwardsTable } from "./author_to_awards";
 import { booksToAuthorsTable } from "./books_to_authors";
+import { seriesToAuthorsTable } from "./series_to_authors";
+import { languagesTable } from "./languages";
 
 export const authorStatusEnum = pgEnum("author_status", [
   "active",
@@ -33,7 +35,8 @@ export const authorsTable = pgTable("authors", {
   deathDate: timestamp("death_date"),
   status: authorStatusEnum("status").default('active').notNull(),
   country: varchar("country", { length: 255 }),
-  language: varchar("language", { length: 255 }),
+   languageCode: varchar("language_code", { length: 5 })                 // Language code (e.g. "en", "ru")
+      .references(() => languagesTable.code),
 
   photoUrl: varchar("photo_url", { length: 255 }),
   website: varchar("website", { length: 255 }),
@@ -50,6 +53,7 @@ export const authorsTable = pgTable("authors", {
 
 export const authorsTableRelations = relations(authorsTable, ({ one, many }) => ({
   books: many(booksToAuthorsTable),
-  bookSeries: many(booksSeriesTable),
+  bookSeries: many(seriesTable),
   awards: many(authorToAwardsTable),
+  series: many(seriesToAuthorsTable),
 }));
