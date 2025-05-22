@@ -1,12 +1,12 @@
-import { integer, pgTable, serial, varchar } from "drizzle-orm/pg-core";
-import { booksTable } from "./books";
+import { pgTable, serial, varchar } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import { booksToGenresTable } from "./book_to_genres";
 
 export const genresTable = pgTable("genres", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).unique().notNull(),
 });
 
-export const bookGenres = pgTable("book_genres", {
-  bookId: integer("book_id").references(() => booksTable.id).notNull(),
-  genreId: integer("genre_id").references(() => genresTable.id).notNull(),
-});
+export const genresTableRelations = relations(genresTable, ({ many }) => ({
+  books: many(booksToGenresTable),
+}));

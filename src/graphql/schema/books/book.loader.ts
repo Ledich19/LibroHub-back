@@ -6,7 +6,8 @@ import {
 } from "../../../db/schema";
 import { DbBook } from "../../../db/types/books";
 import { DbAuthor } from "../../../db/types/author";
-import { Context } from "../../types";
+
+import { GraphQLContext } from "../../context";
 
 export const bookLoader = async (
   ids: number[],
@@ -23,7 +24,7 @@ export const bookLoader = async (
 
 export const authorsByBooksIdLoader = async (
   ids: number[],
-  ctx: Context
+  ctx: GraphQLContext
 ): Promise<readonly (DbAuthor[] | Error)[]> => {
   ctx.log.debug("📚 Loading authors for books:", ids);
 

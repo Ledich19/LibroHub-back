@@ -1,8 +1,8 @@
 import "./hello";
 import "./user/user";
 import "./auth/auth";
-import "./author/author.type";
-
+import "./author";
+import "./filters";
 import "./language";
 import "./books";
 import "./series";

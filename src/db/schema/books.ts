@@ -14,9 +14,9 @@ import { relations } from "drizzle-orm";
 import { seriesTable } from "./series";
 import { languagesTable } from "./languages";
 import { bookReviewsTable } from "./book_reviews";
-import { bookGenres } from "./genres";
 import { booksToAuthorsTable } from "./books_to_authors";
 import { usersTable } from "./users";
+import { booksToGenresTable } from "./book_to_genres";
 
 // Main "books" table definition
 export const booksTable = pgTable("books", {
@@ -47,9 +47,9 @@ export const booksTable = pgTable("books", {
   totalReviews: integer("total_reviews").default(0),                    // Cached total review count
 
   // === Media & External Links ===
-  coverUrl: varchar("cover_url", { length: 255 }),                      // Cover image
-  previewUrl: varchar("preview_url", { length: 255 }),                  // Preview (first chapter, etc.)
-  downloadUrl: varchar("download_url", { length: 255 }),                // Download link (if allowed)
+  coverUrl: varchar("cover_url", { length: 5000  }),                      // Cover image
+  previewUrl: varchar("preview_url", { length: 5000  }),                  // Preview (first chapter, etc.)
+  downloadUrl: varchar("download_url", { length: 5000 }),                // Download link (if allowed)
 
   // === Moderation & Publication State ===
   isPublished: boolean("is_published").default(true).notNull(),         // Soft-publish flag (visible to public)
@@ -72,7 +72,7 @@ export const booksRelations = relations(booksTable, ({ one, many }) => ({
     fields: [booksTable.languageCode],
     references: [languagesTable.code],
   }),
-  genres: many(bookGenres),
+  genres: many(booksToGenresTable),
   reviews: many(bookReviewsTable),
   authors: many(booksToAuthorsTable),
 }));

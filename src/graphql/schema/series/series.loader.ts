@@ -6,13 +6,13 @@ import {
   seriesToAuthorsTable,
 } from "../../../db/schema";
 import { DbSeries } from "../../../db/types/books_serias";
-import { Context } from "../../types";
 import { DbBook } from "../../../db/types/books";
 import { DbAuthor } from "../../../db/types/author";
+import { GraphQLContext } from "../../context";
 
 export const seriesLoader = async (
   ids: number[],
-  ctx: Context
+  ctx: GraphQLContext
 ): Promise<readonly (DbSeries | Error)[]> => {
   console.log("📦 Loading series loader works: ", ids);
   const series = (await ctx.db
@@ -29,7 +29,7 @@ export const seriesLoader = async (
 
 export const booksBySeriesLoader = async (
   seriesIds: number[],
-  ctx: Context
+  ctx: GraphQLContext
 ): Promise<readonly (readonly DbBook[] | Error | null)[]> => {
   ctx.log.debug("📦 Loading books by series IDs:", seriesIds);
 
@@ -55,7 +55,7 @@ export const booksBySeriesLoader = async (
 
 export const authorsBySeriesIdLoader = async (
   ids: number[],
-  ctx: Context
+  ctx: GraphQLContext
 ): Promise<readonly (DbAuthor[] | Error)[]> => {
   ctx.log.debug("📚 Loading authors for series:", ids);
 

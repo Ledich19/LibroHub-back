@@ -9,8 +9,12 @@ export const GqlAuthor = builder.loadableObjectRef<DbAuthor, number>("Author", {
 GqlAuthor.implement({
   fields: (t) => ({
     id: t.exposeID("id"),
-    firstNames: t.exposeString("firstName"),
+    firstName: t.exposeString("firstName"),
+    middleName: t.exposeString("middleName"),
     lastName: t.exposeString("lastName"),
+    penName: t.exposeString("penName"),
+    bio: t.exposeString("bio"),
+
     slug: t.exposeString("slug"),
     photoUrl: t.exposeString("photoUrl"),
     birthDate: t.expose("birthDate", { type: "Date" }),

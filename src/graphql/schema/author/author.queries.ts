@@ -18,7 +18,7 @@ builder.queryFields((t) => ({
       ids: t.arg.stringList({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
-      return args.ids.map((id) => Number(id)); // ✅ вернуть массив id
+      return args.ids.map((id) => Number(id)); 
     },
   }),
 }));

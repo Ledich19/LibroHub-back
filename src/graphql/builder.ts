@@ -1,8 +1,8 @@
 import SchemaBuilder from "@pothos/core";
 import { GraphQLDate } from "graphql-scalars";
 import ScopeAuthPlugin from "@pothos/plugin-scope-auth";
-import { Context } from "./types";
 import DataloaderPlugin from '@pothos/plugin-dataloader';
+import { GraphQLContext } from "./context";
 
 type MyPerms = "readStuff" | "updateStuff" | "readArticle";
 
@@ -17,7 +17,7 @@ export const builder = new SchemaBuilder<{
     deferredScope: boolean;
     // customPerm: MyPerms;
   };
-  Context: Context;
+  Context: GraphQLContext;
   
 }>({
   plugins: [ScopeAuthPlugin,DataloaderPlugin],
