@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "check": "tsc --pretty --noEmit",
-    "start": "ts-node src/index.ts",
+    "start": "tsx  src/index.ts",
     "dev": "tsx watch src/index.ts",
     "d:push": "npx drizzle-kit push",
     "d:generate": "npx drizzle-kit generate",
