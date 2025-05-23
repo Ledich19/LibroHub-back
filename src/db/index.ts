@@ -13,11 +13,13 @@ import { achievementsTable } from "./schema/achievements";
 import { achievementsData } from "./seeds/permanetDate/achievements";
 import { reset } from "drizzle-seed";
 import { mockSeedsRun } from "./seeds";
+import { usersData } from "./seeds/permanetDate/users";
 
 const db = drizzle(process.env.DATABASE_URL!, { schema });
 
 await reset(db, schema);
 // real seeds
+await db.insert(schema.usersTable).values(usersData).onConflictDoNothing();
 await db.insert(languagesTable).values(languageData).onConflictDoNothing();
 await db.insert(schema.genresTable).values(genreData).onConflictDoNothing();
 await db
@@ -32,5 +34,5 @@ await db.insert(schema.booksToAuthorsTable).values(booksToAuthorsData).onConflic
 
 
 
-mockSeedsRun(db);
+// mockSeedsRun(db);
 export default db;

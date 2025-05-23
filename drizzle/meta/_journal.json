@@ -5,36 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1746982886444,
-      "tag": "0000_minor_squadron_supreme",
+      "when": 1747987669655,
+      "tag": "0000_perpetual_power_man",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1746982903344,
-      "tag": "0001_add_series_and_book_trigger",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1747336001621,
-      "tag": "0002_brainy_tony_stark",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1747562497087,
-      "tag": "0003_wealthy_squadron_supreme",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1747562573319,
-      "tag": "0004_public_pepper_potts",
+      "when": 1747987989085,
+      "tag": "0001_add_trigers_to_book",
       "breakpoints": true
     }
   ]

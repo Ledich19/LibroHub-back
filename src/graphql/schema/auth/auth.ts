@@ -4,7 +4,7 @@ import { compare, hash } from "bcryptjs";
 import db from "../../../db";
 import { usersTable } from "../../../db/schema";
 import { eq } from "drizzle-orm";
-import { GqlUser } from "../user/user";
+import { GqlUser } from "../user/user.type";
 import { DbUser } from "../../../db/types/user";
 
 const JWT_SECRET = process.env.JWT_SECRET ?? "secret";

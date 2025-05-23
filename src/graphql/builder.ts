@@ -24,7 +24,10 @@ export const builder = new SchemaBuilder<{
   scopeAuth: {
     authorizeOnSubscribe: true,
     authScopes: async (ctx) => ({
-      loggedIn: !!ctx.userId,
+      loggedIn: () => {
+        console.log('ctx.userId', ctx.userId)
+        return !!ctx.userId;
+      },
       
       public: !!ctx.userId,
       // eagerly evaluated scope

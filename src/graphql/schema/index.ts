@@ -1,5 +1,5 @@
 import "./hello";
-import "./user/user";
+import "./user";
 import "./auth/auth";
 import "./author";
 import "./filters";
